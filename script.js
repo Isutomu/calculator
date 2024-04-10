@@ -4,6 +4,13 @@ const display = document.querySelector('.display');
 const clearButton = document.querySelector('.clear');
 const deleteButton = document.querySelector('.del');
 
+document.onkeydown = (e) => {
+    if (Number(e.key)) {
+        console.log(e.key);
+        updateNumber(e.key);
+    }
+};
+
 const operands = {
     firstOperand : '',
     operator : '',
@@ -12,14 +19,11 @@ const operands = {
 
 
 numberButtons.forEach(button =>
-    button.addEventListener('click', updateNumber)
+    button.addEventListener('click', evt => updateNumber(evt.target.textContent))
 );
-function updateNumber(evt) {
-    const button = evt.target;
-    console.log(evt.target);
-
+function updateNumber(key) {
     let operandToUpdate = operands.operator ? 'secondOperand' : 'firstOperand';
-    let numberUpdate = button.textContent;
+    let numberUpdate = key;
 
     if ((numberUpdate === '.' && operands[operandToUpdate].includes('.')) ||
         (numberUpdate === '0' && operands[operandToUpdate] === '0')) {
@@ -33,19 +37,16 @@ function updateNumber(evt) {
 }
 
 operatorButtons.forEach(button => 
-    button.addEventListener('click', updateOperator)
+    button.addEventListener('click', evt => updateOperator(evt.target.textContent))
 );
-function updateOperator(evt) {
-    const button = evt.target;
-    console.log(evt.target);
-
+function updateOperator(key) {
     if (Object.values(operands).join('') === '') return;
 
     if (operands.firstOperand && operands.secondOperand === '') {
-        if (button.textContent === '=') {
+        if (key === '=') {
             operands.operator = '';
         } else {
-            operands.operator = button.textContent;
+            operands.operator = key;
         }
     } else {
         try {
@@ -56,8 +57,8 @@ function updateOperator(evt) {
         }
 
         operands.secondOperand = '';
-        if (button.textContent !== '=') {
-            operands.operator = button.textContent;
+        if (key !== '=') {
+            operands.operator = key;
         } else {
             operands.operator = '';
         }
@@ -69,16 +70,16 @@ function updateOperator(evt) {
 function operate(operator) {
     switch (operator) {
         case '+' :
-            operands.firstOperand = add(operands.firstOperand, operands.secondOperand);
+            operands.firstOperand = String(add(operands.firstOperand, operands.secondOperand));
             break;
         case '-' :
-            operands.firstOperand = subtract(operands.firstOperand, operands.secondOperand);
+            operands.firstOperand = String(subtract(operands.firstOperand, operands.secondOperand));
             break;
         case 'x' :
-            operands.firstOperand = multiply(operands.firstOperand, operands.secondOperand);
+            operands.firstOperand = String(multiply(operands.firstOperand, operands.secondOperand));
             break;
         case '/' :
-            operands.firstOperand = divide(operands.firstOperand, operands.secondOperand);
+            operands.firstOperand = String(divide(operands.firstOperand, operands.secondOperand));
             break;
     }
 }
@@ -109,11 +110,11 @@ function add(x, y) {
 }
 
 function subtract(x, y){
-    return Math.round((Number(x)+Number(y)) *100)/100;
+    return Math.round((Number(x)-Number(y)) *100)/100;
 }
 
 function multiply(x, y){
-    return Math.round((Number(x)+Number(y)) *100)/100;
+    return Math.round((Number(x)*Number(y)) *100)/100;
 }
 
 function divide(x, y){
@@ -122,5 +123,5 @@ function divide(x, y){
         clear();
         throw 'Divison by 0';
     }
-    return Math.round((Number(x)+Number(y)) *100)/100;
+    return Math.round((Number(x)/Number(y)) *100)/100;
 }
