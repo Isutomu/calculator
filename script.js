@@ -1,4 +1,6 @@
 const numberButtons = document.querySelectorAll('.number');
+const operatorButtons = document.querySelectorAll('.operands');
+const display = document.querySelector('.display');
 
 const operands = {
     firstOperand : '',
@@ -8,18 +10,58 @@ const operands = {
 
 
 numberButtons.forEach(button =>
-    button.addEventListener('click', (e) => operate(e.target))
+    button.addEventListener('click', (e) => updateNumber(e.target))
 );
-
-function operateNumber(button) {
+function updateNumber(button) {
     if(operands.operator) {
         secondOperand += button.textContent;
     }
     else {
         firstOperand += button.textContent;
-    }
 }
 
+operatorButtons.forEach(button => 
+    button.addEventListener('click', (e) => updateOperator(e.target))
+);
+function updateOperator(button) {
+    if (Object.values(operands).join('') === '') return;
+
+    if (operands.firstOperand && operands.secondOperand === '') {
+        if (button.textContent === '=') {
+            operands.operator = '';
+        } else {
+            operands.operator = button.textContent;
+        }
+    } else {
+        operate(operands.operator);
+
+        operands.secondOperand = '';
+        if (button.textContent !== '=') {
+            operands.operator = button.textContent;
+        } else {
+            operands.operator = '';
+        }
+    }
+
+    display.textContent = Object.values(operands).join('');
+}
+
+function operate(operator) {
+    switch (operator) {
+        case '+' :
+            operands.firstOperand = add(operands.firstOperand, operands.secondOperand);
+            break;
+        case '-' :
+            operands.firstOperand = subtract(operands.firstOperand, operands.secondOperand);
+            break;
+        case 'x' :
+            operands.firstOperand = multiply(operands.firstOperand, operands.secondOperand);
+            break;
+        case '/' :
+            operands.firstOperand = divide(operands.firstOperand, operands.secondOperand);
+            break;
+    }
+}
 
 
 function add(x, y) {
