@@ -1,3 +1,27 @@
+const numberButtons = document.querySelectorAll('.number');
+
+const operands = {
+    firstOperand : '',
+    secondOperand : '',
+    operator : ''
+};
+
+
+numberButtons.forEach(button =>
+    button.addEventListener('click', (e) => operate(e.target))
+);
+
+function operateNumber(button) {
+    if(operands.operator) {
+        secondOperand += button.textContent;
+    }
+    else {
+        firstOperand += button.textContent;
+    }
+}
+
+
+
 function add(x, y) {
     return Math.round((x+y) *100)/100;
 }
