@@ -13,11 +13,20 @@ numberButtons.forEach(button =>
     button.addEventListener('click', (e) => updateNumber(e.target))
 );
 function updateNumber(button) {
-    if(operands.operator) {
-        secondOperand += button.textContent;
+    let operandToUpdate = operands.operator ? 'secondOperand' : 'firstOperand';
+    let numberUpdate = button.textContent;
+
+    if (operands[operandToUpdate] === '') {
+        if (['0', '.'].includes(numberUpdate)) {
+            return;
+        }
+    } else if (
+        (numberUpdate === '.') && operands[operandToUpdate].includes('.')
+    ) {
+        return;
     }
-    else {
-        firstOperand += button.textContent;
+
+    operands[operandToUpdate] += numberUpdate;
 }
 
 operatorButtons.forEach(button => 
