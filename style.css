@@ -1,0 +1,44 @@
+.calculator {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 70%;
+  margin: 0 auto;
+
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.display {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  min-height: 40px;
+  font-size: xx-large;
+  color: blueviolet;
+  border: 3px solid black;
+}
+
+.row {
+  display: flex;
+}
+
+button {
+  flex: 1;
+  font-size: xx-large;
+}
+
+.operator {
+  background-color: aqua;
+}
+
+.number {
+  background-color: lightcyan;
+}
+
+.clear, .del {
+  background-color: lightpink;
+}
