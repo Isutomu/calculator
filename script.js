@@ -1,38 +1,44 @@
 const numberButtons = document.querySelectorAll('.number');
-const operatorButtons = document.querySelectorAll('.operands');
+const operatorButtons = document.querySelectorAll('.operator');
 const display = document.querySelector('.display');
+const clearButton = document.querySelector('.clear');
+const deleteButton = document.querySelector('.del');
 
 const operands = {
     firstOperand : '',
+    operator : '',
     secondOperand : '',
-    operator : ''
 };
 
 
 numberButtons.forEach(button =>
-    button.addEventListener('click', (e) => updateNumber(e.target))
+    button.addEventListener('click', updateNumber)
 );
-function updateNumber(button) {
+function updateNumber(evt) {
+    const button = evt.target;
+    console.log(evt.target);
+
     let operandToUpdate = operands.operator ? 'secondOperand' : 'firstOperand';
     let numberUpdate = button.textContent;
 
-    if (operands[operandToUpdate] === '') {
-        if (['0', '.'].includes(numberUpdate)) {
-            return;
-        }
-    } else if (
-        (numberUpdate === '.') && operands[operandToUpdate].includes('.')
-    ) {
+    if ((numberUpdate === '.' && operands[operandToUpdate].includes('.')) ||
+        (numberUpdate === '0' && operands[operandToUpdate] === '0')) {
         return;
     }
-
+    if(operands[operandToUpdate] === '0' && '123456789'.includes(numberUpdate)){
+        operands[operandToUpdate] = '';
+    }
     operands[operandToUpdate] += numberUpdate;
+    display.textContent = Object.values(operands).join('');
 }
 
 operatorButtons.forEach(button => 
-    button.addEventListener('click', (e) => updateOperator(e.target))
+    button.addEventListener('click', updateOperator)
 );
-function updateOperator(button) {
+function updateOperator(evt) {
+    const button = evt.target;
+    console.log(evt.target);
+
     if (Object.values(operands).join('') === '') return;
 
     if (operands.firstOperand && operands.secondOperand === '') {
@@ -42,7 +48,12 @@ function updateOperator(button) {
             operands.operator = button.textContent;
         }
     } else {
-        operate(operands.operator);
+        try {
+            operate(operands.operator);
+        } catch(e) {
+            console.log(e);
+            return;
+        }
 
         operands.secondOperand = '';
         if (button.textContent !== '=') {
@@ -73,18 +84,43 @@ function operate(operator) {
 }
 
 
+clearButton.addEventListener('click', clear);
+function clear() {
+    operands.firstOperand = '';
+    operands.operator = '';
+    operands.secondOperand = '';
+    display.textContent = '';
+}
+
+
+deleteButton.addEventListener('click', deleteNumber);
+function deleteNumber() {
+    if (operands.operator) {
+        operands.secondOperand = operands.secondOperand.slice(0, -1);
+    } else {
+        operands.firstOperand = operands.firstOperand.slice(0, -1);
+    }
+
+    display.textContent = Object.values(operands).join(''); 
+}
+
 function add(x, y) {
-    return Math.round((x+y) *100)/100;
+    return Math.round((Number(x)+Number(y)) *100)/100;
 }
 
 function subtract(x, y){
-    return Math.round((x-y) *100)/100;
+    return Math.round((Number(x)+Number(y)) *100)/100;
 }
 
 function multiply(x, y){
-    return Math.round((x*y) *100)/100;
+    return Math.round((Number(x)+Number(y)) *100)/100;
 }
 
 function divide(x, y){
-    return Math.round((x/y) *100)/100;
+    if(y === '0') {
+        alert('OOOOOPS');
+        clear();
+        throw 'Divison by 0';
+    }
+    return Math.round((Number(x)+Number(y)) *100)/100;
 }
